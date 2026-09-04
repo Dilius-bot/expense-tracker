@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react";
 import type { Expense } from "./types/expense";
-import { fetchExpensesApi } from "./services/api";
+import {
+  fetchExpensesApi,
+  deleteExpenseByIDApi,
+  clearAllExpensesApi,
+} from "./services/api";
 import ExpenseForm from "./components/ExpenseForm";
 import ExpenseList from "./components/ExpenseList";
 
@@ -16,6 +20,28 @@ function App() {
     }
   };
 
+  const handleDeleteByID = async (id: number) => {
+    try {
+      await deleteExpenseByIDApi(id);
+      await loadExpenses();
+    } catch (error: any) {
+      if (error instanceof Error) {
+        alert(`${error.message}`);
+      }
+    }
+  };
+
+  const handleClearAll = async () => {
+    try {
+      await clearAllExpensesApi();
+      await loadExpenses();
+    } catch (error: any) {
+      if (error instanceof Error) {
+        alert(`${error.message}`);
+      }
+    }
+  };
+
   useEffect(() => {
     loadExpenses();
   }, []);
@@ -23,7 +49,11 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4 space-y-6">
       <ExpenseForm onExpenseAdded={loadExpenses} />
-      <ExpenseList items={expenses} />
+      <ExpenseList
+        items={expenses}
+        onDeleteByID={handleDeleteByID}
+        onClearAll={handleClearAll}
+      />
     </div>
   );
 }
