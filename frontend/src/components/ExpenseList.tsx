@@ -2,9 +2,15 @@ import type { Expense } from "../types/expense";
 
 interface ExpenseListProps {
   items: Expense[];
+  onDeleteByID: (id: number) => void;
+  onClearAll: () => void;
 }
 
-export default function ExpenseList({ items }: ExpenseListProps) {
+export default function ExpenseList({
+  items,
+  onDeleteByID,
+  onClearAll,
+}: ExpenseListProps) {
   const totalAmount = items.reduce((sum, item) => sum + item.amount, 0);
 
   return (
@@ -25,6 +31,12 @@ export default function ExpenseList({ items }: ExpenseListProps) {
                 <span className="text-red-600 font-semibold">
                   -{item.amount} ₽
                 </span>
+                <button
+                  onClick={() => onDeleteByID(item.expense_id)}
+                  className="text-gray-400 hover:text-red-500 transition-colors duration-150 font-bold px-1 text-xs cursor-pointer"
+                >
+                  ✕
+                </button>
               </li>
             ))}
           </ul>
@@ -33,6 +45,12 @@ export default function ExpenseList({ items }: ExpenseListProps) {
             <span>Итого потрачено:</span>
             <span className="text-lg text-indigo-600">{totalAmount} ₽</span>
           </div>
+          <button
+            onClick={onClearAll}
+            className="w-full mt-2 bg-red-50 hover:bg-red-100 text-red-600 font-semibold py-2 px-4 rounded-lg text-xs transition-colors duration-150 cursor-pointer"
+          >
+            Очистить всю историю
+          </button>
         </div>
       ) : (
         <p className="text-center text-gray-400 py-6 text-sm">
